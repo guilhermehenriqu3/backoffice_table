@@ -1,0 +1,38 @@
+export const mock = [
+  {
+    accepted: true,
+    name: "Nome do Operador",
+    data: "2023-09-01T12:00:00Z",
+    initialLatitude: 40.7128,
+    initialLongitude: -74.006,
+    destinationLatitude: 34.0522,
+    destinationLongitude: -118.2437,
+  },
+  {
+    accepted: false,
+    name: "Nome do Operador",
+    data: "2023-09-01T12:00:00Z",
+    initialLatitude: 40.7128,
+    initialLongitude: -74.006,
+    destinationLatitude: 34.0522,
+    destinationLongitude: -118.2437,
+  },
+  {
+    accepted: true,
+    name: "Nome do Operador",
+    data: "2023-09-01T12:00:00Z",
+    initialLatitude: 40.7128,
+    initialLongitude: -74.006,
+    destinationLatitude: 34.0522,
+    destinationLongitude: -118.2437,
+  },
+  {
+    accepted: false,
+    name: "Nome do Operador",
+    data: "2023-09-01T12:00:00Z",
+    initialLatitude: 40.7128,
+    initialLongitude: -74.006,
+    destinationLatitude: 34.0522,
+    destinationLongitude: -118.2437,
+  },
+];
