@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
-import { mock } from "./mock";
-
 interface Mockdata {
   accepted: boolean;
   name: string;
-  data: string;
+  date: string;
   initialLatitude: number;
   initialLongitude: number;
   destinationLatitude: number;
@@ -14,61 +11,32 @@ interface Mockdata {
 }
 
 function App() {
-  const [receveMock, setReceveMock] = useState<Mockdata[]>([]);
+  const [dataRender, setDataRender] = useState<Mockdata | any>([]);
+
+  const importData = async () => {
+    fetch("http://10.10.1.121:3056/users").then(async (a) => {
+      let objs = await a.json();
+      setDataRender(() => objs);
+    });
+  };
+
+  const handleAcceptClick = async (obj: any) => {
+    await fetch(`http://10.10.1.121:3056/users/${obj.id}`, {
+      method: "PUT",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...obj, accepted: true }),
+    });
+
+    importData();
+  };
 
   useEffect(() => {
-    return setReceveMock(mock);
+    importData();
   }, []);
-  console.log(receveMock);
-
-  //   const [dataRender, setDataRender] = useState([]);
-
-  //   const filePath = "./mock";
-  //   async function importData() {
-  //     try {
-  //       const response = await axios.get(filePath);
-  //       const data = response.data;
-  //       console.log("Dados importados:", data);
-  //       setDataRender(data);
-  //       setTimeout(importData, 5000);
-  //     } catch (error) {
-  //       console.error("Ocorreu um erro ao importar os dados:", error);
-
-  //       setTimeout(importData, 5000);
-  //     }
-  //     clearTimeout;
-
-  //     let timeout = setTimeout(() => {
-  //       chamada();
-  //       importData();
-  //     }, 5000);
-  //   }
-
-  //   useEffect(() => {
-  //     importData();
-  //   }, []);
-
-  const handleAcceptClick = (key: number) => {
-    const updateAccept = [...receveMock];
-    updateAccept[key].accepted = !updateAccept[key].accepted;
-
-    setReceveMock(updateAccept);
-  };
-
-  const handleSendClick = () => {
-    const dataToSend = {
-      table: receveMock,
-    };
-    axios
-      .post("URL_DA_SUA_API_AQUI", dataToSend)
-      .then((response) => {
-        const data = response.data;
-        console.log("Resposta da solicitação:", data);
-      })
-      .catch((error) => {
-        console.error("Erro ao fazer a solicitação:", error);
-      });
-  };
 
   return (
     <div className="wrapper">
@@ -84,13 +52,13 @@ function App() {
               <th>Aceitar / Rejeitar</th>
             </tr>
           </thead>
-          {receveMock.map((item, index) => (
+          {dataRender.map((item: Mockdata, index: number) => (
             <>
-              <tbody>
-                <tr key={index} className="row">
+              <tbody key={index}>
+                <tr className="row">
                   <td>{item.accepted ? "Aceito" : "Não aceito"} </td>
                   <td>{item.name}</td>
-                  <td>{item.data}</td>
+                  <td>{new Date(item.date)?.toLocaleString("pt-BR")}</td>
                   <td>
                     Latitude {item.initialLatitude} - Longitude
                     {item.initialLongitude}
@@ -100,7 +68,11 @@ function App() {
                     {item.destinationLongitude}
                   </td>
                   <td>
-                    <button onClick={() => handleAcceptClick(index)}>
+                    <button
+                      onClick={() => {
+                        handleAcceptClick(item);
+                      }}
+                    >
                       {item.accepted ? "Rejeitar" : "Aceitar"}
                     </button>
                   </td>
@@ -109,9 +81,6 @@ function App() {
             </>
           ))}
         </table>
-        <button className="send" onClick={() => handleSendClick}>
-          Enviar
-        </button>
       </div>
     </div>
   );
